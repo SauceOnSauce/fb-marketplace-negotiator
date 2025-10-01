@@ -1,25 +1,30 @@
-from html_parser import FacebookMarketplaceParser, ProductData
+from html_parser import FacebookMarketplaceParser
 
 
-
-def display_product_info(product_data: ProductData):
+def display_product_info(product_name, price, year, mileage, description):
     """Display the extracted product information."""
     print("="*40)
     print("EXTRACTED PRODUCT INFORMATION")
     print("="*40)
-    print(f"Product Name: {product_data.product_name}")
-    print(f"Price: £{product_data.price}")
+    print(f"Product Name: {product_name}")
+    print(f"Price: £{price}")
     
-    if product_data.mileage:
-        print(f"Mileage: {product_data.mileage}")
-    if product_data.year:
-        print(f"Year: {product_data.year}")
+    if mileage:
+        print(f"Mileage: {mileage}")
+    if year:
+        print(f"Year: {year}")
         
-    print(f"Description: {product_data.description}")
+    print(f"Description: {description}")
     print("="*40 + "\n")
 
 
 file = "listings/ZX10R-listing.html"
-html = FacebookMarketplaceParser(file)
+product_data = FacebookMarketplaceParser(file)
 
-display_product_info(html.parse())
+product_name = product_data.extract_product_name()
+price = product_data.extract_price()
+year = product_data.extract_year()
+mileage = product_data.extract_mileage()
+description = product_data.extract_description()
+
+display_product_info(product_name, price, year, mileage, description)

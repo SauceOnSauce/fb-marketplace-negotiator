@@ -4,30 +4,13 @@ This module provides functions to extract HTML content from Facebook Marketplace
 '''
 
 from bs4 import BeautifulSoup
-from pydantic import BaseModel, field_validator
-from typing import Optional
 import logging
 import re
-import sys
 
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-class ProductData(BaseModel):
-    """Validate product data structure."""
-    product_name: str
-    price: float
-    description: str
-    year: Optional[int] = None
-    mileage: Optional[int] = None
-    
-    @field_validator("price")
-    def price_must_be_positive(cls, v):
-        if v < 0:
-            raise ValueError("Price must be a positive number.")
-        return v
-    
+  
 class FacebookMarketplaceParser:
     """
     Parses HTML content from Facebook Marketplace listings to extract product information.
@@ -77,38 +60,5 @@ class FacebookMarketplaceParser:
         pass
 
     def extract_description(self):
-        logger.info("Extracting description...")
-        match = re.search(r'"redacted_description":\{"text":"(.*?)"\}', self.soup.get_text(), re.DOTALL)
-        if match:
-            description = match.group(1).replace('\\n', '\n').strip()
-            if description:
-                return str(description)
-        logger.warning("Description not found.")
         return None
     
-    def parse(self) -> ProductData:
-        """Extract and validate all product data."""
-        title = self.extract_product_name()
-        price = self.extract_price()
-        year = self.extract_year()
-        mileage = self.extract_mileage()
-        description = self.extract_description()
-        
-        if title is None:
-            raise TypeError("Product name could not be extracted from HTML.")
-        if price is None:
-            raise ValueError("Price could not be extracted from HTML.")
-        if description is None:
-            raise TypeError("Description could not be extracted from HTML.")
-        product_data = ProductData(
-            product_name=title,
-            price=price,
-            year=year,
-            mileage=mileage,
-            description=description
-        )
-        
-        logger.info("Product data extracted and validated successfully.")
-        return product_data
-    
-   
