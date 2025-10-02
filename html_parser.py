@@ -32,7 +32,7 @@ class FacebookMarketplaceParser:
         if self.soup.title and self.soup.title.string:
             logger.info("Extracting product name...")
             match = re.search(r'–\s*(.*?)\s*\|', self.soup.title.string)
-            product_name = match.group(1).strip() if match else self.soup.title.string.strip()
+            product_name = match.group(1).strip() if match else self.soup.title.string.strip()   
         else:
             logger.warning("No <title> tag found in HTML.")
             product_name = None
@@ -40,7 +40,7 @@ class FacebookMarketplaceParser:
 
     def extract_price(self):
         # Attempt to extract the price using regex
-        logger.info("Extracting price...")
+        logger.info("Extracting product price...")
         price_string = self.soup.find(string=re.compile(r'\£\d+'))
         if price_string:
             match = re.search(r'\£([\d,\.]+)', price_string)
@@ -55,10 +55,22 @@ class FacebookMarketplaceParser:
         return None
 
     def extract_year(self):
-        pass
+        # Attempt to extract the product name from the <title> tag
+        if self.soup.title and self.soup.title.string:
+            match = re.search(r'–\s*(.*?)\s*\|', self.soup.title.string)
+            product_name = match.group(1).strip() if match else self.soup.title.string.strip()
+            
+            # Extract year from product name
+            logger.info("Extracting product year...")
+            year_match = re.search(r'\b(19\d{2}|20\d{2})\b', product_name)
+            year = year_match.group(1) if year_match else None
+            return year
+        else:
+            logger.warning("No <title> tag found in HTML.")
+            return None, None
 
     def extract_mileage(self):
-        logger.info("Extracting mileage...")
+        logger.info("Extracting product mileage...")
         mileage_tag = self.soup.find('span', text=re.compile(r'Driven.*km'))
         if mileage_tag:
             mileage = mileage_tag.get_text(strip=True)
@@ -74,7 +86,7 @@ class FacebookMarketplaceParser:
         return None
 
     def extract_description(self):
-        logger.info("Extracting description...")
+        logger.info("Extracting product description...")
         for script in self.soup.find_all('script'):
             if script.string and 'redacted_description' in script.string:
                 # Use regex to extract the description text
