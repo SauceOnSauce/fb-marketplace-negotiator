@@ -21,11 +21,12 @@ class FacebookMarketplaceParser:
                 html_content = f.read()
         else:
             html_content = html_source
-            
+        
         self.soup = BeautifulSoup(html_content, 'lxml')
-        logger.info("="*40)
-        logger.info("HTML content parsed successfully.")
- 
+        print("="*40)
+        print("HTML content loaded successfully.")
+        print("="*40)
+        
     def extract_product_name(self):
         # Attempt to extract the product name from the <title> tag
         if self.soup.title and self.soup.title.string:
@@ -57,7 +58,20 @@ class FacebookMarketplaceParser:
         pass
 
     def extract_mileage(self):
-        pass
+        logger.info("Extracting mileage...")
+        mileage_tag = self.soup.find('span', text=re.compile(r'Driven.*km'))
+        if mileage_tag:
+            mileage = mileage_tag.get_text(strip=True)
+            # Extract just the number
+            mileage_match = re.search(r'([\d,]+)\s*km', mileage)
+            if mileage_match:
+                mileage_num = mileage_match.group(1)
+                return mileage_num.replace(',', '')
+            else:
+                logger.warning("Mileage format not recognized.")
+                return None
+        logger.warning("Mileage not found in the HTML content.")
+        return None
 
     def extract_description(self):
         logger.info("Extracting description...")
