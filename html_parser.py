@@ -15,28 +15,25 @@ class FacebookMarketplaceParser:
     """
     Parses HTML content from Facebook Marketplace listings to extract product information.
     """
-    def __init__(self, html_source: str, is_file: bool = True):
-        if is_file:
-            with open(html_source, 'r', encoding='utf-8') as f:
-                html_content = f.read()
-        else:
-            html_content = html_source
+    def __init__(self, html_source: str):
+        with open(html_source, 'r', encoding='utf-8') as f:
+            self.html_content = f.read()
+        self.soup = BeautifulSoup(self.html_content, 'lxml')
+        logger.info("HTML content reloaded from file.")
         
-        self.soup = BeautifulSoup(html_content, 'lxml')
-        print("="*40)
-        print("HTML content loaded successfully.")
-        print("="*40)
-        
+        self.result = {}
+            
     def extract_product_name(self):
         # Attempt to extract the product name from the <title> tag
         if self.soup.title and self.soup.title.string:
             logger.info("Extracting product name...")
             match = re.search(r'–\s*(.*?)\s*\|', self.soup.title.string)
-            product_name = match.group(1).strip() if match else self.soup.title.string.strip()   
+            product_name = match.group(1).strip() if match else self.soup.title.string.strip()
+            self.result['product_name'] = product_name   
         else:
             logger.warning("No <title> tag found in HTML.")
-            product_name = None
-        return product_name
+            self.result['product_name'] = None
+        
 
     def extract_price(self):
         # Attempt to extract the price using regex
@@ -47,28 +44,28 @@ class FacebookMarketplaceParser:
             if match:
                 price_value = match.group(1).replace(',', '')
                 try:
-                    return float(price_value)
+                    self.result['price'] = float(price_value)
                 except ValueError:
                     logger.error(f"Could not convert price '{price_value}' to float.")
-                    return None
-        logger.warning("Price not found or could not be parsed.")
-        return None
+                    self.result['price'] = None
+        else:
+            logger.warning("Price not found or could not be parsed.")
+            self.result['price'] = None
 
     def extract_year(self):
-        product_name = self.extract_product_name()
         # Extract year from product name
         logger.info("Extracting product year...")
-        if product_name is not None:
-            year_match = re.search(r'\b(19\d{2}|20\d{2})\b', product_name)
+        if self.result['product_name']:
+            year_match = re.search(r'\b(19\d{2}|20\d{2})\b', self.result['product_name'])
             if year_match:
                 year = year_match.group(1)
-                return year
+                self.result['year'] = year
             else:
                 logger.warning("Year not found in product name.")
-                return None
+                self.result['year'] = None
         else:
             logger.warning("Year not found in product name.")
-            return None
+            self.result['year'] = None
 
     def extract_mileage(self):
         logger.info("Extracting product mileage...")
@@ -79,12 +76,13 @@ class FacebookMarketplaceParser:
             mileage_match = re.search(r'([\d,]+)\s*km', mileage)
             if mileage_match:
                 mileage_num = mileage_match.group(1)
-                return mileage_num.replace(',', '')
+                self.result['mileage'] = mileage_num.replace(',', '')
             else:
                 logger.warning("Mileage format not recognized.")
-                return None
-        logger.warning("Mileage not found in the HTML content.")
-        return None
+                self.result['mileage'] = None
+        else:
+            logger.warning("Mileage not found in the HTML content.")
+            self.result['mileage'] = None
 
     def extract_description(self):
         logger.info("Extracting product description...")
@@ -96,8 +94,16 @@ class FacebookMarketplaceParser:
                     description = match.group(1)
                     # Unescape newlines and other escaped characters
                     description = description.replace('\\n', '\n').replace('\\"', '"')
-                    return description
-        logger.warning("Description not found in the HTML content.")
-        return None
+                    self.result['description'] = description
+                else:
+                    logger.warning("Description not found in the HTML content.")
+                    self.result['description'] = None
     
+    def extract_all_info(self):
+        self.extract_product_name()
+        self.extract_price()
+        self.extract_year()
+        self.extract_mileage()
+        self.extract_description()
+        return self.result      
     
