@@ -55,19 +55,20 @@ class FacebookMarketplaceParser:
         return None
 
     def extract_year(self):
-        # Attempt to extract the product name from the <title> tag
-        if self.soup.title and self.soup.title.string:
-            match = re.search(r'–\s*(.*?)\s*\|', self.soup.title.string)
-            product_name = match.group(1).strip() if match else self.soup.title.string.strip()
-            
-            # Extract year from product name
-            logger.info("Extracting product year...")
+        product_name = self.extract_product_name()
+        # Extract year from product name
+        logger.info("Extracting product year...")
+        if product_name is not None:
             year_match = re.search(r'\b(19\d{2}|20\d{2})\b', product_name)
-            year = year_match.group(1) if year_match else None
-            return year
+            if year_match:
+                year = year_match.group(1)
+                return year
+            else:
+                logger.warning("Year not found in product name.")
+                return None
         else:
-            logger.warning("No <title> tag found in HTML.")
-            return None, None
+            logger.warning("Year not found in product name.")
+            return None
 
     def extract_mileage(self):
         logger.info("Extracting product mileage...")
