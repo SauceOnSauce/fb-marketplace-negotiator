@@ -18,7 +18,7 @@ def display_product_info(product_name, price, year, mileage, description):
     print("="*40 + "\n")
 
 
-file = "listings/ZX10R-listing.html"
+file = "listings/Astra-listing.html"
 product_data = FacebookMarketplaceParser(file)
 
 product_name = product_data.extract_product_name()

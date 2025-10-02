@@ -60,5 +60,17 @@ class FacebookMarketplaceParser:
         pass
 
     def extract_description(self):
+        logger.info("Extracting description...")
+        for script in self.soup.find_all('script'):
+            if script.string and 'redacted_description' in script.string:
+                # Use regex to extract the description text
+                match = re.search(r'"redacted_description":\s*\{\s*"text"\s*:\s*"([^"]*(?:\\.[^"]*)*)"', script.string)
+                if match:
+                    description = match.group(1)
+                    # Unescape newlines and other escaped characters
+                    description = description.replace('\\n', '\n').replace('\\"', '"')
+                    return description
+        logger.warning("Description not found in the HTML content.")
         return None
+    
     
