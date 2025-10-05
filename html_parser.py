@@ -57,7 +57,7 @@ class FacebookMarketplaceParser:
         if self.result['product_name']:
             year_match = re.search(r'\b(19\d{2}|20\d{2})\b', self.result['product_name'])
             if year_match:
-                year = year_match.group(1)
+                year = int(year_match.group(1))
                 self.result['year'] = year
             else:
                 logger.warning("Year not found in product name.")
@@ -75,7 +75,7 @@ class FacebookMarketplaceParser:
             mileage_match = re.search(r'([\d,]+)\s*km', mileage)
             if mileage_match:
                 mileage_num = mileage_match.group(1)
-                self.result['mileage'] = mileage_num.replace(',', '')
+                self.result['mileage'] = int(mileage_num.replace(',', ''))
             else:
                 logger.warning("Mileage format not recognized.")
                 self.result['mileage'] = None
