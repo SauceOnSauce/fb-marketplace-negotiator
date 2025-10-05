@@ -27,15 +27,19 @@ class DataAnalyzer():
         '''Analyze vehicle mileage against average UK mileage.'''
         vehicle_age = self.market_result['vehicle_age']
         
-        mileage_average = mileage / vehicle_age
+        mileage_average = round(mileage / vehicle_age)
         
         if mileage_average > 12000:
             '''High mileage'''
+            print("High mileage")
         elif mileage_average > 12000 and mileage_average < 10000:
             '''Average mileage'''
+            print("Average mileage")
         else:
             '''Low mileage'''
             
-        logger.info(f"Vehicle mileage analysis: {mileage} miles over {vehicle_age} years = {mileage_average:.0f} miles/year")
+        logger.info(f"Vehicle mileage analysis: {mileage} miles over {vehicle_age} years = {mileage_average} miles/year")
         self.market_result['Mileage_analysis'] = mileage_average
     
+    
+    #TODO: Add more analysis methods here as needed
