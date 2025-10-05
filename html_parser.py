@@ -34,7 +34,6 @@ class FacebookMarketplaceParser:
             logger.warning("No <title> tag found in HTML.")
             self.result['product_name'] = None
         
-
     def extract_price(self):
         # Attempt to extract the price using regex
         logger.info("Extracting product price...")
