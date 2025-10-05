@@ -28,7 +28,8 @@ class DataAnalyzer():
         vehicle_age = self.market_result['vehicle_age']
         
         mileage_average = round(mileage / vehicle_age)
-        
+        logger.info(f"Vehicle mileage analysis: {mileage} miles over {vehicle_age} years = {mileage_average} miles/year")
+    
         if mileage_average > 12000:
             '''High mileage'''
             print("High mileage")
@@ -38,8 +39,6 @@ class DataAnalyzer():
         else:
             '''Low mileage'''
             
-        logger.info(f"Vehicle mileage analysis: {mileage} miles over {vehicle_age} years = {mileage_average} miles/year")
-        self.market_result['Mileage_analysis'] = mileage_average
-    
-    
+        self.market_result['mileage_analysis'] = mileage_average
+     
     #TODO: Add more analysis methods here as needed
