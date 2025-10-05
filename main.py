@@ -30,6 +30,6 @@ year = info['year']
 mileage = info['mileage']
 
 analyzer.vehicle_age(year)
-analyzer.analysis_vehicle_mileage(info['mileage'])
+analyzer.analysis_vehicle_mileage(mileage)
 
 print(analyzer.market_result) #Testing purposes only
