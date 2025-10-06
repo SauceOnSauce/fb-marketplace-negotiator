@@ -1,9 +1,6 @@
 from html_parser import FacebookMarketplaceParser
 from data_analyzer import DataAnalyzer
 
-file = "listings/Astra-listing.html"
-product_data = FacebookMarketplaceParser(file)
-info = product_data.extract_all_info()
 
 def display_info(info):
     """Display the extracted product information."""
@@ -19,17 +16,32 @@ def display_info(info):
         print(f"Year: {info["year"]}")
         
     print(f"Description: {info["description"]}")
-    print("="*40 + "\n")
+    print("="*40)
         
-display_info(info)
+def display_analyzed_info(analyzed_data):
+    """Display the extracted product information."""
+    print("="*40)
+    print("Analyzed PRODUCT INFORMATION")
+    print("="*40)
+    print(f"Vehicle Age: {analyzed_data['vehicle_age']}")
+    print(f"Mileage Analysis: {analyzed_data['mileage_analysis']} miles/year")  
+    print("="*40)  
+    
+      
+file = "listings/Astra-listing.html"
+product_data = FacebookMarketplaceParser(file)
+info = product_data.extract_all_info()
 
+display_info(info)
 
 #print(info) #Testing purposes only
 analyzer = DataAnalyzer()
+
 year = info['year']
 mileage = info['mileage']
 
 analyzer.vehicle_age(year)
 analyzer.analysis_vehicle_mileage(mileage)
+analyzed_data = analyzer.market_result
 
-print(analyzer.market_result) #Testing purposes only
+display_analyzed_info(analyzed_data)
