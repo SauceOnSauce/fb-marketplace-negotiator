@@ -1,5 +1,6 @@
 from html_parser import FacebookMarketplaceParser
 from data_analyzer import DataAnalyzer
+import json
 
 
 def display_info(info):
@@ -7,7 +8,7 @@ def display_info(info):
     print("="*40)
     print("EXTRACTED PRODUCT INFORMATION")
     print("="*40)
-    print(f"Product Name: {info["product_name"]}")
+    print(f"Product Name: {info['product_name']}")
     print(f"Price: £{info["price"]}")
     
     if info["mileage"]:
@@ -30,7 +31,11 @@ def display_analyzed_info(analyzed_data):
       
 file = "listings/Polo-listing.html"
 product_data = FacebookMarketplaceParser(file)
-info = product_data.extract_all_info()
+product_data.extract_all_info()
+#read product data from json
+with open('listings/Product_data.json', 'r', encoding='utf-8') as json_file:
+    info = json.load(json_file)
+#print(info)testing purposes only
 
 display_info(info)
 
