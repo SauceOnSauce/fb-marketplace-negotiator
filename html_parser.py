@@ -30,7 +30,7 @@ class FacebookMarketplaceParser:
             logger.info("Extracting name...")
             match = re.search(r'–\s*(.*?)\s*\|', self.soup.title.string)
             product_name = match.group(1).strip() if match else self.soup.title.string.strip()
-            self.result['product_name'] = product_name   
+            self.result['product_name'] = product_name  
         else:
             logger.warning("No <title> tag found in HTML.")
             self.result['product_name'] = None
@@ -98,6 +98,7 @@ class FacebookMarketplaceParser:
         self.extract_year()
         self.extract_mileage()
         self.extract_description()
+              
         #save extracted data to json
         try:
             with open('listings/Product_data.json', 'w', encoding='utf-8') as json_file:
@@ -106,4 +107,3 @@ class FacebookMarketplaceParser:
         except Exception as e:
             logger.error(f"Error saving content to JSON: {e}")
               
-    
