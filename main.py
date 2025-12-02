@@ -55,7 +55,6 @@ display_analyzed_info(analyzed_data)
 
 #TODO List:
 # Priority TODO's:
-    #TODO: Create a function to save the extracted and analyzed data to a JSON or CSV file to handover to LLM message generator.
     #TODO: Implement negotiation message generation from extracted data using Local and/or API LLM.
     #TODO: Implement error handling in case the HTML structure changes or expected data is missing 
         #TODO: Add option to enter missing data manually before moving on.
