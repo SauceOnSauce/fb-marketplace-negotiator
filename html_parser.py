@@ -6,6 +6,7 @@ This module provides functions to extract HTML content from Facebook Marketplace
 from bs4 import BeautifulSoup
 import logging
 import re
+import json
 
 
 logging.basicConfig(level=logging.INFO)
@@ -97,5 +98,12 @@ class FacebookMarketplaceParser:
         self.extract_year()
         self.extract_mileage()
         self.extract_description()
-        return self.result      
+        #save extracted data to json
+        try:
+            with open('listings/Product_data.json', 'w', encoding='utf-8') as json_file:
+                json.dump(self.result, json_file, ensure_ascii=False, indent=4)
+            logger.info("Product data saved to product_data.json.")
+        except Exception as e:
+            logger.error(f"Error saving content to JSON: {e}")
+              
     
