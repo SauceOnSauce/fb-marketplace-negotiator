@@ -4,6 +4,7 @@ Analyzes extracted data to provide insights and suggestions for negotiation.
 '''
 from datetime import datetime 
 import logging
+import json
 
 
 logging.basicConfig(
@@ -28,27 +29,21 @@ class DataAnalyzer():
         logger.info(f"Vehicle age calculation...")
         self.market_result['vehicle_age'] = vehicle_age
     
-    def analysis_vehicle_mileage(self, mileage: int):
+    def average_vehicle_mileage(self, mileage: int):
         '''Analyze vehicle mileage against average UK mileage.'''
         vehicle_age = self.market_result['vehicle_age']
         
         mileage_average = round(mileage / vehicle_age)
-        logger.info(f"Vehicle mileage analysis...")
-    
-        if mileage_average > 12000:
-            '''High mileage'''
-            #print("High mileage")
-        elif mileage_average > 12000 and mileage_average < 10000:
-            '''Average mileage'''
-            #print("Average mileage")
-        else:
-            '''Low mileage'''
+        logger.info(f"Vehicle mileage average...")
             
-        self.market_result['mileage_analysis'] = mileage_average
-     
-    # def analyzed_data(self):
-    #     self.vehicle_age()
-    #     self.analysis_vehicle_mileage()
-    #     return self.market_result
-
-    #TODO: Add more analysis methods here as needed
+        self.market_result['mileage_average'] = mileage_average
+        
+    def append_to_json(self, data: dict, filename: str):
+        '''Append analyzed data to product_data.json file.'''
+        with open(filename, 'r+', encoding='utf-8') as json_file:
+            existing_data = json.load(json_file)
+            existing_data.update(data)
+            json_file.seek(0)
+            json.dump(existing_data, json_file, indent=4)
+        logger.info(f"Appending analyzed data to {filename}...")
+    

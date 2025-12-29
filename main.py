@@ -3,18 +3,31 @@ from data_analyzer import DataAnalyzer
 import json
   
       
-file = "listings/Astra-listing.html"
+file = "listings/ZX6R-listing.html"
 product_data = FacebookMarketplaceParser(file)
 product_data.extract_all_info()
+filename = file.replace('.html', '_data.json')
 
-with open('listings/Product_data.json', 'r', encoding='utf-8') as json_file:
+try:
+    with open(filename, 'w', encoding='utf-8') as json_file:
+        json.dump(product_data.result, json_file, indent=4)
+    print(f"""
+          {"="*40}
+          Product data extracted and saved to {filename}
+          {"="*40}
+          """)
+except Exception as e:
+    print(f"Error saving content to JSON: {e}")
+
+with open(filename, 'r', encoding='utf-8') as json_file:
     info = json.load(json_file)
 
 analyzer = DataAnalyzer()
 analyzer.vehicle_age(info['year'])
-analyzer.analysis_vehicle_mileage(info['mileage'])
+analyzer.average_vehicle_mileage(info['mileage'])
 analyzed_data = analyzer.market_result
 
+analyzer.append_to_json(analyzed_data, filename)
 
 #TODO List:
 # Priority TODO's:
