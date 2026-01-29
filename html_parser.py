@@ -6,6 +6,7 @@ This module provides functions to extract HTML content from Facebook Marketplace
 from bs4 import BeautifulSoup
 import logging
 import re
+from datetime import datetime 
 
 logging.basicConfig(
     level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -91,6 +92,25 @@ class FacebookMarketplaceParser:
         else:
             logger.warning("Description not found in the HTML content.")
             self.result['description'] = "None"
+            
+    def vehicle_age(self):
+        '''Calculate vehicle age.'''
+        current_year = datetime.now().year
+        year = self.result['year']
+        vehicle_age = current_year - year
+        
+        logger.info(f"Vehicle age calculation...")
+        self.result['vehicle_age'] = vehicle_age
+    
+    def average_vehicle_mileage(self):
+        '''Analyze vehicle mileage against average UK mileage.'''
+        vehicle_age = self.result['vehicle_age']
+        mileage = self.result['mileage']
+        
+        mileage_average = round(mileage / vehicle_age)
+        logger.info(f"Vehicle mileage average...")
+            
+        self.result['mileage_average'] = mileage_average
     
     def extract_all_info(self):
         self.extract_product_name()
@@ -98,4 +118,6 @@ class FacebookMarketplaceParser:
         self.extract_year()
         self.extract_mileage()
         self.extract_description()
+        self.vehicle_age()
+        self.average_vehicle_mileage()
               
